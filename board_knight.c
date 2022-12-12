@@ -19,6 +19,7 @@ Item *initGame()
 	initBoard(node, initial);
   
   node->depth = 0;
+  node->f = 0;
   node->board[0] =1; 
 
   return node;
@@ -95,7 +96,7 @@ int isValidPosition( Item *node, int pos )
     for (j=0; j<WH_BOARD; j++) {
       // on verifie si il peut se deplacer a pos
       if(node->board[i*WH_BOARD+j] == 1){
-          if((abs(i-ii) == 1 && abs(j-jj) == 2) || (abs(i-ii) == 2 && abs(j-jj) == 1 ))
+          if((((abs(i-ii) == 1 )&& (abs(j-jj) == 2))) || (((abs(i-ii) == 2) && (abs(j-jj) == 1 ))))
             return 1; 
           else
             return 0;
@@ -123,6 +124,7 @@ Item *getChildBoard( Item *node, int pos )
     child_p->board[i] = 0;
     child_p->board[pos] = 1;
     child_p->depth = node->depth +1 ;
+    child_p->f = node->f + 1;
     
 		/* link child to parent for backtrack */
     child_p->parent = node;

@@ -56,8 +56,6 @@ Item* onList( list_t *list, char *board)
     	    if (cur->board[j] != board[j]) break;
         }
         if (j == cur->size) {
-//            printf("%s", cur->board);
-//            printf("\n");
             return cur;
         }
         cur = cur->next;
@@ -100,71 +98,47 @@ Item *popLast( list_t *list ) //
 
 // remove a node from list
 void delList( list_t *list, Item *node) {
-    assert(list->numElements == 0);
-
-    if(list->numElements == 1 && list->first == node){
-        cleanupList(list);
-      }
-
-    if(node->prev == NULL){
-          list->first = list->first->next;
-          list->first->prev = NULL;
-          freeItem(node);
-          list->numElements--;
-    }
-
-    if(node->next == NULL){
-          list->last = list->last->prev;
-          list->last->next = NULL;
-          freeItem(node);
-          list->numElements--;
-    }
-
-    if(list->numElements > 1){
+    assert( node );
+	// remove
+    if (node->prev) {
         node->prev->next = node->next;
-        node->next->prev = node->prev;
-        freeItem(node);
-        list->numElements--;
+        if (node->next) node->next->prev = node->prev;
+    } else {
+        assert( node == list->first );
+        if (node->next) {
+            list->first = node->next;
+            if (list->first) list->first->prev = NULL;
+        }
     }
+    if (node->next == NULL) {
+        assert( node == list->last );
+        list->last = node->prev;
+    }
+	node->next = node->prev = NULL;
+    list->numElements--;
+	if (list->numElements == 0) {
+		list->first = NULL;
+		list->last = NULL;
+	}
   
 }
 
 // return and remove best item with minimal f value
 Item *popBest( list_t *list ) // and remove the best board from the list.
 {
-  if(list->numElements == 1){
-        cleanupList(list);
-  }
-
   Item *tmp = list->first;
   Item *value = tmp;
-  tmp = tmp->next;
-  while(tmp != NULL){
-  if(tmp->f < value->f){
-    value->f = tmp->f;
-    tmp = tmp->next;
-  }else
-    tmp = tmp->next;
+
+  while(tmp){
+    if(tmp->f < value->f){
+      value->f = tmp->f;
+    }
+      tmp = tmp->next;
   }
   tmp = value;
   
-    if(tmp->prev == NULL){
-          list->first = list->first->next;
-          list->first->prev = NULL;
-          list->numElements--;
-          return tmp;
-    }
+    if (tmp) delList( list, tmp);
 
-    if(value->next == NULL){
-          list->last = list->last->prev;
-          list->last->next = NULL;
-          list->numElements--;
-          return tmp;
-    }
-
-  value->prev->next = value->next;
-  value->next->prev = value->prev;
-  list->numElements--;
   return tmp;
 }
 
