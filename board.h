@@ -4,12 +4,14 @@
 #define RANDOM()  ((float)rand() / (float)RAND_MAX)
 #define RANDMAX(x)  (int)((float)(x)*rand()/(RAND_MAX+1.0))
 
-#define MAX_BOARD 36 //25
-#define WH_BOARD 6 //5
+#define MAX_BOARD 9 //25
+#define WH_BOARD 3 //5
 
 
 
 Item *initGame();
+
+Item *initGameTaquin(int level);
 
 void initBoard(Item *node, char *board);
 
