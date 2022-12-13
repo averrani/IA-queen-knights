@@ -144,7 +144,7 @@ void ucs( void )
                 if(temp != NULL && (temp->f > child_p->f)){
                   delList(&openList_p, temp);
                   addLast( &openList_p, child_p );
-                }else if (onList(&closedList_p, child_p->board) == NULL ){
+                }else if (onList(&closedList_p, child_p->board) == NULL && onList(&openList_p, child_p->board) == NULL ){
                     addLast( &openList_p, child_p );
                 }
                 /* Add child node to openList */
@@ -173,7 +173,7 @@ int main()
 
   addLast( &openList_p, initial_state );
   //printList(openList_p);
-  ucs();
+  dfs();
   
 	printf("Finished!\n");
   
