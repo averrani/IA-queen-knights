@@ -158,7 +158,7 @@ void ucs( void )
 
 int main()
 {
-	/* init lists */
+	// init lists 
   initList(&openList_p);
   initList(&closedList_p);
 
@@ -175,7 +175,9 @@ int main()
   
 	printf("Finished!\n");
   
-	/* clean lists */
+  //printf("%d \n", isValidPosition(initial_state, 10));
+	
+  // clean lists
 	cleanupList( &openList_p );
   cleanupList( &closedList_p );
 	

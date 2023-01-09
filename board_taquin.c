@@ -95,48 +95,27 @@ void initBoard(Item *node, char *board) {
 // Return 0 if all queens are placed. Positive otherwise
 // ie: nb queens that still need to be placed.
 double evaluateBoard(Item *node) {
-  /*
-  int pos =0;
-  while(node->board[pos] == 0){
-      pos++;
-    }
-  int ii = pos / WH_BOARD;
-	int jj = pos % WH_BOARD;
-
-  int i = WH_BOARD - ii -1;
-  int j = WH_BOARD - jj -1;
-
-  return j+i;
-  */
-  if(node->board[MAX_BOARD-1] == 1)
-        return 0 ; 
-    else
-        return 1 ;
+  char target[MAX_BOARD] = {1, 2, 3, 4, 5, 6, 7, 8, 0};
+  int i,n=0;
+  for(i=0; i<MAX_BOARD; i++){
+    if(node->board[i] != target[i])
+      n++;
+  }
+  return n;
 }
 
-// Test if position pos is valid with respect to node's state
-// n  Queens -> not same row ; not same column ; not same diagonal
+//teste si pos est dans le board et si pos correspond au positions valides 
+  //selon le tableau moves en fonction du blank courant
 int isValidPosition( Item *node, int pos )
 {
   int i;
-  int j;
-  int p;
-	int ii = pos / WH_BOARD;
-	int jj = pos % WH_BOARD;
-
-  //on cherche le cavalier dans le board
-  for (i=0; i<WH_BOARD; i++) {
-    for (j=0; j<WH_BOARD; j++) {
-      // on verifie si il peut se deplacer a pos
-      if(node->board[i*WH_BOARD+j] == 1){
-          if((((abs(i-ii) == 1 )&& (abs(j-jj) == 2))) || (((abs(i-ii) == 2) && (abs(j-jj) == 1 ))))
-            return 1; 
-          else
-            return 0;
-    }
-  }
-  }
+  int b = node->blank;
   
+  for(i=0; i<moves[b].len; i++){
+    if(pos >= 0 && pos < MAX_BOARD && pos == moves[b].valid[i])
+      return 1;
+  }
+  return 0;
 }
 
 // Return a new item where a new queen is added at position pos if possible. NULL if not valid
