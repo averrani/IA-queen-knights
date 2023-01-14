@@ -156,6 +156,50 @@ void ucs( void )
   return;
 }
 
+void astar( void ) 
+{
+  Item *cur_node, *child_p, *temp;
+  int i;  
+  
+
+  while ( listCount(&openList_p) != 0 ) { /* While items are on the open list */
+   	//printf("%d\n", listCount(&openList_p));
+    /* Get the first item on the open list */
+    cur_node = popBest(&openList_p);
+		//printList(openList_p);
+    // printf("%d  %f\n", listCount(&openList_p), evaluateBoard( cur_node ));
+    
+    /* Add it to the "visited" list */
+    addLast(&closedList_p, cur_node);
+    /* Do we have a solution? */
+    if (evaluateBoard(cur_node) == 0.0 ) {
+      
+      showSolution(cur_node);
+      return;
+
+    } else {
+      /* Enumerate adjacent states */
+      for (int i = 0; i < MAX_BOARD; i++) {
+        //printf("%lf\n", cur_node->f);
+        child_p = getChildBoard( cur_node, i );
+        if (child_p != NULL) { // it's a valid child!
+        
+                temp = onList(&openList_p, child_p->board);
+                if(temp != NULL && (temp->f > child_p->f)){
+                  delList(&openList_p, temp);
+                  addLast( &openList_p, child_p );
+                }else if (onList(&closedList_p, child_p->board) == NULL && onList(&openList_p, child_p->board) == NULL ){
+                    addLast( &openList_p, child_p );
+                }
+                /* Add child node to openList */
+        }
+      }
+    }
+  }
+  
+  return;
+}
+
 int main()
 {
 	// init lists 
@@ -171,7 +215,7 @@ int main()
 
   addLast( &openList_p, initial_state );
   //printList(openList_p);
-  dfs();
+  ucs();
   
 	printf("Finished!\n");
   

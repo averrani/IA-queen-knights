@@ -8,6 +8,10 @@
 #define MAX_VECTOR 4
 
 typedef struct {
+ int x,y;
+} Point;
+
+typedef struct {
  int len;
  unsigned int valid[MAX_VECTOR];
 } move_t;
@@ -80,7 +84,7 @@ void printBoard( Item *node )
 // initialize node's state from a given board
 void initBoard(Item *node, char *board) {
 	assert( node );
-	int i=0;
+	int i;
 	node->size = MAX_BOARD;
     node->board = calloc(MAX_BOARD, sizeof(char));
   
@@ -94,7 +98,7 @@ void initBoard(Item *node, char *board) {
 
 // Return 0 if all queens are placed. Positive otherwise
 // ie: nb queens that still need to be placed.
-double evaluateBoard(Item *node) {
+double evaluateBoard(Item *node) { 
   char target[MAX_BOARD] = {1, 2, 3, 4, 5, 6, 7, 8, 0};
   int i,n=0;
   for(i=0; i<MAX_BOARD; i++){
@@ -102,6 +106,49 @@ double evaluateBoard(Item *node) {
       n++;
   }
   return n;
+}
+
+double get_simple_heuristic(Item *node) { 
+  char target[MAX_BOARD] = {1, 2, 3, 4, 5, 6, 7, 8, 0};
+  int i,n=0;
+  for(i=0; i<MAX_BOARD; i++){
+    if(node->board[i] != target[i])
+      n++;
+  }
+  return n;
+}
+
+// cherche la position d'une case pos
+int getPos(Item *node, int pos){
+  int i;
+
+  for(i=0; i<MAX_BOARD; i++){
+    if(node->board[i] == pos)
+      return i;
+  }
+  return -1;
+}
+
+double get_Manhattan_heuristic(Item *node) {
+  Point i, f; // coordonnées pour le calcul de Manhattan
+  int pos_i, pos_f; // position actuelle de la case et position finale
+  int j;
+  int res =0;
+
+  for(j=0; j<MAX_BOARD; j++){
+    pos_i = getPos(node, j); //cherche la position actuelle de la case étudiée
+    pos_f = (j-1)%MAX_BOARD; // et sa position finale
+    
+    if(pos_i != pos_f){ // calcul coordonnées
+      i.x = pos_i/WH_BOARD;
+      i.y = pos_i%WH_BOARD;
+      f.x = pos_f/WH_BOARD;
+      f.y = pos_f%WH_BOARD;
+
+      res = res + abs(f.x - i.x) + abs(f.y - i.y); //calcul de la fonction de Manhattan
+    }
+  }
+  return res;
 }
 
 //teste si pos est dans le board et si pos correspond au positions valides 
@@ -125,23 +172,27 @@ Item *getChildBoard( Item *node, int pos )
   int i=0;
   if ( isValidPosition(node, pos) ) {
 
-    /* allocate and init child node */
+    // allocate and init child node 
     child_p = nodeAlloc();
-
     initBoard(child_p, node->board);
-    /* Make move */
-    while(child_p->board[i] == 0){
-      i++;
-    }
-    child_p->board[i] = 0;
-    child_p->board[pos] = 1;
-    child_p->depth = node->depth +1 ;
-    child_p->f = node->f + 1;
+
+    // Make move
+    child_p->board[node->blank] = child_p->board[pos];
+    child_p->board[pos] = 0;
+    child_p->blank = pos;
+    //printBoard(child_p);
     
-		/* link child to parent for backtrack */
+    child_p->depth = node->depth +1 ;
+    
+    //Cost calculation
+    child_p->g = child_p->depth;
+    child_p->h = get_Manhattan_heuristic(child_p);
+    child_p->f = child_p->h + child_p->g;
+    
+		// link child to parent for backtrack 
     child_p->parent = node;
 
   }
 
   return child_p;
-}
+} 
