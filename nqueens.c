@@ -114,6 +114,9 @@ void dfs( void ) //pile
 
 int main()
 {
+  //permet de calculer le temps écoulé
+  clock_t t;
+  t = clock();
 	/* init lists */
   initList(&openList_p);
   initList(&closedList_p);
@@ -136,6 +139,10 @@ int main()
 	/* clean lists */
 	cleanupList( &openList_p );
   cleanupList( &closedList_p );
+
+  t = clock() - t;
+  double time_taken = ((double)t)/CLOCKS_PER_SEC; // calculate the elapsed time
+  printf("The program took %f seconds to execute", time_taken);
 	
   return 0;
 }

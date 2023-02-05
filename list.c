@@ -124,22 +124,33 @@ void delList( list_t *list, Item *node) {
 }
 
 // return and remove best item with minimal f value
-Item *popBest( list_t *list ) // and remove the best board from the list.
+Item *popBest(list_t *list) // and remove the best board from the list.
 {
   Item *tmp = list->first;
-  Item *value = tmp;
+  Item *value;
+  float best;
 
-  while(tmp){
-    if(tmp->f < value->f){
-      value->f = tmp->f;
-    }
-      tmp = tmp->next;
+  if (list->numElements == 0)
+  {
+    value = NULL;
   }
-  tmp = value;
-  
-    if (tmp) delList( list, tmp);
-
-  return tmp;
+  else
+  {
+    value = list->first;
+    best = value->f;
+    tmp = tmp->next;
+    while (tmp)
+    {         
+            if (tmp->f < best)
+            {
+              best = tmp->f;
+              value = tmp;
+            }
+            tmp = tmp->next;
+    }
+    delList(list, value);
+  }
+  return value;
 }
 
  // add item in top

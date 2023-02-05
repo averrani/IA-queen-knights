@@ -191,7 +191,6 @@ void astar( void )
                 }else if (onList(&closedList_p, child_p->board) == NULL && onList(&openList_p, child_p->board) == NULL ){
                     addLast( &openList_p, child_p );
                 }
-                /* Add child node to openList */
         }
       }
     }
@@ -202,20 +201,23 @@ void astar( void )
 
 int main()
 {
+  //permet de calculer le temps écoulé
+  clock_t t;
+  t = clock();
 	// init lists 
   initList(&openList_p);
   initList(&closedList_p);
 
 	
   printf("\nInitial:");
-  Item *initial_state = initGameTaquin(0);
+  Item *initial_state = initGameTaquin(2);
   printBoard( initial_state );
 
   printf("\nSearching ...\n");
 
   addLast( &openList_p, initial_state );
   //printList(openList_p);
-  ucs();
+  astar();
   
 	printf("Finished!\n");
   
@@ -224,6 +226,10 @@ int main()
   // clean lists
 	cleanupList( &openList_p );
   cleanupList( &closedList_p );
+
+    t = clock() - t;
+  double time_taken = ((double)t)/CLOCKS_PER_SEC; // calculate the elapsed time
+  printf("The program took %f seconds to execute", time_taken);
 	
   return 0;
 }

@@ -186,7 +186,7 @@ Item *getChildBoard( Item *node, int pos )
     
     //Cost calculation
     child_p->g = child_p->depth;
-    child_p->h = get_Manhattan_heuristic(child_p);
+    child_p->h = get_Manhattan_heuristic(node);
     child_p->f = child_p->h + child_p->g;
     
 		// link child to parent for backtrack 
